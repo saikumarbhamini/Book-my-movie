@@ -1,0 +1,24 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace BookMovieTicket.Models;
+
+public partial class MovieAdditionalInfo
+{
+    [ForeignKey(nameof(Imdb))]
+    public string ImdbId { get; set; } = null!;
+
+    public string? Story { get; set; }
+
+    public string? Summary { get; set; }
+
+    public string? Tagline { get; set; }
+
+    public string? Actors { get; set; }
+
+    public string? WinsNominations { get; set; }
+
+    public DateOnly? ReleaseDate { get; set; }
+    public virtual Movie Imdb { get; set; } = null!;
+}
