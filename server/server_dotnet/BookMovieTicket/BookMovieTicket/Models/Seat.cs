@@ -7,7 +7,7 @@ public class Seat
 {
     public int Id { get; set; }
     [Required]
-    public TheatreScreen? ScreenId { get; set; }
+    public TheatreScreen? Screen { get; set; }
     [Required]
     [MaxLength(10)]
     public string? Row { get; set; }
@@ -17,6 +17,5 @@ public class Seat
     public bool Status { get; set; }
     
     [JsonIgnore]
-    public ICollection<Reservation>? Reservations { get; set; }
-    
+    public ICollection<Reservation>? Reservations { get; set; } = null!;
 }

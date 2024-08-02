@@ -1,13 +1,14 @@
 using BookMovieTicket.Data;
+using BookMovieTicket.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-
-IConfiguration? configuration = builder.Configuration;
 
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
 builder.Services.AddDbContext<MoviesDbContext>();
+builder.Services.AddScoped<MoviesService>();
+builder.Services.AddScoped<TheatreService>();
 builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
@@ -19,15 +20,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
 
 app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}"
-    );
+app.MapControllers();
 
 app.Run();

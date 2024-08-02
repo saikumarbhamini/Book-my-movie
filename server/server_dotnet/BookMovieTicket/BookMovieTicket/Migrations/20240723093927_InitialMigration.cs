@@ -33,15 +33,15 @@ namespace BookMovieTicket.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    MovieIdImdbId = table.Column<string>(type: "varchar(30)", nullable: false),
+                    MovieImdbId = table.Column<string>(type: "varchar(30)", nullable: false),
                     ShowTime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Shows", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Shows_Movies_MovieIdImdbId",
-                        column: x => x.MovieIdImdbId,
+                        name: "FK_Shows_Movies_MovieImdbId",
+                        column: x => x.MovieImdbId,
                         principalTable: "Movies",
                         principalColumn: "imdb_id",
                         onDelete: ReferentialAction.Cascade);
@@ -54,14 +54,14 @@ namespace BookMovieTicket.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ScreenName = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    TheaterIdId = table.Column<int>(type: "int", nullable: true)
+                    TheaterId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TheatreScreens", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TheatreScreens_MovieTheaters_TheaterIdId",
-                        column: x => x.TheaterIdId,
+                        name: "FK_TheatreScreens_MovieTheaters_TheaterId",
+                        column: x => x.TheaterId,
                         principalTable: "MovieTheaters",
                         principalColumn: "Id");
                 });
@@ -117,7 +117,7 @@ namespace BookMovieTicket.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ScreenIdId = table.Column<int>(type: "int", nullable: false),
+                    ScreenId = table.Column<int>(type: "int", nullable: false),
                     Row = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     Number = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<bool>(type: "bit", nullable: false)
@@ -126,8 +126,8 @@ namespace BookMovieTicket.Migrations
                 {
                     table.PrimaryKey("PK_Seats", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Seats_TheatreScreens_ScreenIdId",
-                        column: x => x.ScreenIdId,
+                        name: "FK_Seats_TheatreScreens_ScreenId",
+                        column: x => x.ScreenId,
                         principalTable: "TheatreScreens",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -139,21 +139,21 @@ namespace BookMovieTicket.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserIdId = table.Column<string>(type: "char(32)", nullable: true),
-                    ScreenShowIdId = table.Column<int>(type: "int", nullable: true),
+                    UserId = table.Column<string>(type: "char(32)", nullable: true),
+                    ScreenShowId = table.Column<int>(type: "int", nullable: true),
                     ReservationCode = table.Column<string>(type: "nvarchar(225)", maxLength: 225, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Reservations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Reservations_ScreenShowMappers_ScreenShowIdId",
-                        column: x => x.ScreenShowIdId,
+                        name: "FK_Reservations_ScreenShowMappers_ScreenShowId",
+                        column: x => x.ScreenShowId,
                         principalTable: "ScreenShowMappers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Reservations_user_data_UserIdId",
-                        column: x => x.UserIdId,
+                        name: "FK_Reservations_user_data_UserId",
+                        column: x => x.UserId,
                         principalTable: "user_data",
                         principalColumn: "id");
                 });
@@ -183,14 +183,14 @@ namespace BookMovieTicket.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reservations_ScreenShowIdId",
+                name: "IX_Reservations_ScreenShowId",
                 table: "Reservations",
-                column: "ScreenShowIdId");
+                column: "ScreenShowId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reservations_UserIdId",
+                name: "IX_Reservations_UserId",
                 table: "Reservations",
-                column: "UserIdId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ReservationSeat_SeatsId",
@@ -208,19 +208,19 @@ namespace BookMovieTicket.Migrations
                 column: "ShowId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Seats_ScreenIdId",
+                name: "IX_Seats_ScreenId",
                 table: "Seats",
-                column: "ScreenIdId");
+                column: "ScreenId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Shows_MovieIdImdbId",
+                name: "IX_Shows_MovieImdbId",
                 table: "Shows",
-                column: "MovieIdImdbId");
+                column: "MovieImdbId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TheatreScreens_TheaterIdId",
+                name: "IX_TheatreScreens_TheaterId",
                 table: "TheatreScreens",
-                column: "TheaterIdId");
+                column: "TheaterId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TicketPrices_ShowId",

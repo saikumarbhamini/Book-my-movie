@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using BookMovieTicket.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 namespace BookMovieTicket.Data;
 
@@ -427,6 +428,40 @@ public partial class MoviesDbContext : DbContext
             entity.Property(e => e.Username)
                 .HasMaxLength(150)
                 .HasColumnName("username");
+        });
+
+        modelBuilder.Entity<TheatreScreen>(entity =>
+        {
+            entity.HasOne(e => e.Theatre)
+                .WithMany(t => t.Screens)
+                .HasForeignKey(e => e.TheatreId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.MovieShow)
+                .WithOne(t => t.Screen)
+                .HasForeignKey<TheatreScreen>(e => e.ShowId);
+        });
+
+        modelBuilder.Entity<Show>(entity =>
+        {
+            entity.HasOne(e => e.Movie)
+                .WithMany(s => s.Shows)
+                .IsRequired()
+                .HasForeignKey(e => e.MovieId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            entity.HasOne(e => e.Screen)
+                .WithOne(s => s.MovieShow)
+                .HasForeignKey<Show>(e => e.ScreenId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(e => e.Theatre)
+                .WithMany(s => s.Shows)
+                .HasForeignKey(e => e.TheatreId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         OnModelCreatingPartial(modelBuilder);

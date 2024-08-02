@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace BookMovieTicket.Models;
 
@@ -12,7 +13,7 @@ public class MovieTheater
     public string? Location { get; set; }
     [Required]
     public bool? IsOpen { get; set; }
-    
-    [Required]
-    public int Screens { get; set; }
+
+    public ICollection<TheatreScreen> Screens { get; set; } = null!;
+    public ICollection<Show> Shows { get; set; } = null!;
 }

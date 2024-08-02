@@ -4,6 +4,7 @@ using BookMovieTicket.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookMovieTicket.Migrations
 {
     [DbContext(typeof(MoviesDbContext))]
-    partial class MoviesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240725063051_AddScreenAsCollectionToTheatre")]
+    partial class AddScreenAsCollectionToTheatre
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -455,7 +458,7 @@ namespace BookMovieTicket.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MovieTheaters", (string)null);
+                    b.ToTable("MovieTheaters");
                 });
 
             modelBuilder.Entity("BookMovieTicket.Models.Reservation", b =>
@@ -470,7 +473,7 @@ namespace BookMovieTicket.Migrations
                         .HasMaxLength(225)
                         .HasColumnType("nvarchar(225)");
 
-                    b.Property<int?>("SelectedShowId")
+                    b.Property<int?>("ScreenShowId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -478,11 +481,11 @@ namespace BookMovieTicket.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SelectedShowId");
+                    b.HasIndex("ScreenShowId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reservations", (string)null);
+                    b.ToTable("Reservations");
                 });
 
             modelBuilder.Entity("BookMovieTicket.Models.ScreenShowMapper", b =>
@@ -493,10 +496,10 @@ namespace BookMovieTicket.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ScreenId")
+                    b.Property<int?>("ScreenId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ShowId")
+                    b.Property<int?>("ShowId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -505,7 +508,7 @@ namespace BookMovieTicket.Migrations
 
                     b.HasIndex("ShowId");
 
-                    b.ToTable("ScreenShowMappers", (string)null);
+                    b.ToTable("ScreenShowMappers");
                 });
 
             modelBuilder.Entity("BookMovieTicket.Models.Seat", b =>
@@ -534,7 +537,7 @@ namespace BookMovieTicket.Migrations
 
                     b.HasIndex("ScreenId");
 
-                    b.ToTable("Seats", (string)null);
+                    b.ToTable("Seats");
                 });
 
             modelBuilder.Entity("BookMovieTicket.Models.Show", b =>
@@ -545,30 +548,18 @@ namespace BookMovieTicket.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("MovieId")
+                    b.Property<string>("MovieImdbId")
                         .IsRequired()
-                        .HasMaxLength(30)
                         .HasColumnType("varchar(30)");
-
-                    b.Property<int>("ScreenId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("ShowTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("TheatreId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("MovieId");
+                    b.HasIndex("MovieImdbId");
 
-                    b.HasIndex("ScreenId")
-                        .IsUnique();
-
-                    b.HasIndex("TheatreId");
-
-                    b.ToTable("Shows", (string)null);
+                    b.ToTable("Shows");
                 });
 
             modelBuilder.Entity("BookMovieTicket.Models.TheatreScreen", b =>
@@ -583,20 +574,14 @@ namespace BookMovieTicket.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<int>("Seats")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ShowId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TheatreId")
+                    b.Property<int>("TheaterId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TheatreId");
+                    b.HasIndex("TheaterId");
 
-                    b.ToTable("TheatreScreens", (string)null);
+                    b.ToTable("TheatreScreens");
                 });
 
             modelBuilder.Entity("BookMovieTicket.Models.TicketPrice", b =>
@@ -622,7 +607,7 @@ namespace BookMovieTicket.Migrations
 
                     b.HasIndex("ShowId");
 
-                    b.ToTable("TicketPrices", (string)null);
+                    b.ToTable("TicketPrices");
                 });
 
             modelBuilder.Entity("BookMovieTicket.Models.UserData", b =>
@@ -793,7 +778,7 @@ namespace BookMovieTicket.Migrations
 
                     b.HasIndex("SeatsId");
 
-                    b.ToTable("ReservationSeat", (string)null);
+                    b.ToTable("ReservationSeat");
                 });
 
             modelBuilder.Entity("BookMovieTicket.Models.AuthGroupPermission", b =>
@@ -879,15 +864,15 @@ namespace BookMovieTicket.Migrations
 
             modelBuilder.Entity("BookMovieTicket.Models.Reservation", b =>
                 {
-                    b.HasOne("BookMovieTicket.Models.Show", "SelectedShow")
-                        .WithMany("Reservations")
-                        .HasForeignKey("SelectedShowId");
+                    b.HasOne("BookMovieTicket.Models.ScreenShowMapper", "ScreenShow")
+                        .WithMany()
+                        .HasForeignKey("ScreenShowId");
 
                     b.HasOne("BookMovieTicket.Models.UserData", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
 
-                    b.Navigation("SelectedShow");
+                    b.Navigation("ScreenShow");
 
                     b.Navigation("User");
                 });
@@ -896,15 +881,11 @@ namespace BookMovieTicket.Migrations
                 {
                     b.HasOne("BookMovieTicket.Models.TheatreScreen", "Screen")
                         .WithMany()
-                        .HasForeignKey("ScreenId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ScreenId");
 
                     b.HasOne("BookMovieTicket.Models.Show", "Show")
                         .WithMany()
-                        .HasForeignKey("ShowId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ShowId");
 
                     b.Navigation("Screen");
 
@@ -925,37 +906,23 @@ namespace BookMovieTicket.Migrations
             modelBuilder.Entity("BookMovieTicket.Models.Show", b =>
                 {
                     b.HasOne("BookMovieTicket.Models.Movie", "Movie")
-                        .WithMany("Shows")
-                        .HasForeignKey("MovieId")
+                        .WithMany()
+                        .HasForeignKey("MovieImdbId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("BookMovieTicket.Models.TheatreScreen", "Screen")
-                        .WithOne("MovieShow")
-                        .HasForeignKey("BookMovieTicket.Models.Show", "ScreenId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BookMovieTicket.Models.MovieTheater", "Theatre")
-                        .WithMany("Shows")
-                        .HasForeignKey("TheatreId");
 
                     b.Navigation("Movie");
-
-                    b.Navigation("Screen");
-
-                    b.Navigation("Theatre");
                 });
 
             modelBuilder.Entity("BookMovieTicket.Models.TheatreScreen", b =>
                 {
-                    b.HasOne("BookMovieTicket.Models.MovieTheater", "Theatre")
+                    b.HasOne("BookMovieTicket.Models.MovieTheater", "Theater")
                         .WithMany("Screens")
-                        .HasForeignKey("TheatreId")
+                        .HasForeignKey("TheaterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Theatre");
+                    b.Navigation("Theater");
                 });
 
             modelBuilder.Entity("BookMovieTicket.Models.TicketPrice", b =>
@@ -1050,26 +1017,11 @@ namespace BookMovieTicket.Migrations
                     b.Navigation("MovieDetail");
 
                     b.Navigation("MovieRating");
-
-                    b.Navigation("Shows");
                 });
 
             modelBuilder.Entity("BookMovieTicket.Models.MovieTheater", b =>
                 {
                     b.Navigation("Screens");
-
-                    b.Navigation("Shows");
-                });
-
-            modelBuilder.Entity("BookMovieTicket.Models.Show", b =>
-                {
-                    b.Navigation("Reservations");
-                });
-
-            modelBuilder.Entity("BookMovieTicket.Models.TheatreScreen", b =>
-                {
-                    b.Navigation("MovieShow")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("BookMovieTicket.Models.UserData", b =>

@@ -39,7 +39,7 @@ class UserData(AbstractUser):
     #     super().save(*args, **kwargs)
 
     class Meta:
-        app_label = 'server_app'
+        app_label = "server_app"
         db_table = "user_data"
         verbose_name = "UserData"
         verbose_name_plural = "UsersData"

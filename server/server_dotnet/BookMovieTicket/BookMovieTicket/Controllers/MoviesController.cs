@@ -8,26 +8,29 @@ namespace BookMovieTicket.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class MoviesController : ControllerBase
+public class MoviesController(MoviesService service) : ControllerBase
 {
-    private readonly MoviesService _service;
-    public MoviesController(MoviesService service)
-    {
-        _service=service;
-    }
-
     [HttpGet]
     public IEnumerable<Movie> GetMovies()
     {
-        return _service.GetAllMovies();
+        return service.GetAllMovies();
     }
 
     [HttpGet("{id}")]
     public ActionResult<Movie?> GetMovieById(string id)
     {
-        var movie = _service.GetMovieById(id);
+        var movie = service.GetMovieById(id);
         if (movie is null)
             return NotFound();
         return movie;
+    }
+    
+    [HttpGet("movie-detail/{id}")]
+    public ActionResult<MovieDetail?> GetMovieDetail(string id)
+    {
+        var movieDetail = service.GetMovieDetail(id);
+        if (movieDetail is null)
+            return NotFound();
+        return movieDetail;
     }
 }
